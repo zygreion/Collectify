@@ -3,139 +3,90 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:layout_margin="20dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Gambar Background Full Width di Atas -->
-        <ImageView
-            android:id="@+id/headerImage"
+        <!-- Title -->
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/header_bg" />
+            android:layout_height="wrap_content"
+            android:text="Collectify"
+            android:textStyle="bold"
+            android:textSize="30sp"
+            android:gravity="center_horizontal"/>
 
-        <!-- Avatar diletakkan overlapping -->
-        <RelativeLayout
+        <!-- Subtitle -->
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginTop="-50dp"
-            android:gravity="center_horizontal">
+            android:layout_height="wrap_content"
+            android:text="Aplikasi Stempel Digital untuk Penukaran Merchandise"
+            android:layout_marginBottom="20dp"
+            android:gravity="center_horizontal"/>
 
-            <TextView
-                android:id="@+id/avatar"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_centerInParent="true"
-                android:gravity="center"
-                android:text="B"
-                android:textSize="36sp"
-                android:textStyle="bold"
-                android:textColor="#FFFFFF"
-                android:background="@drawable/avatar_circle"
-                android:elevation="4dp" />
-        </RelativeLayout>
-
-        <!-- Konten Form -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp">
+            android:orientation="horizontal">
 
-            <!-- Username -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="Username"
-                android:textColor="#333333"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvUsername"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@drawable/input_background"
-                android:gravity="center_vertical|start"
-                android:paddingHorizontal="12dp"
-                android:text="bndri123"
-                android:textColor="#666666" />
-
-            <!-- Join date -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Join date"
-                android:textColor="#333333"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvJoinDate"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@drawable/input_background"
-                android:gravity="center_vertical|start"
-                android:paddingHorizontal="12dp"
-                android:text="Bergabung sejak: 27 Mei 2025"
-                android:textColor="#666666" />
-
-            <!-- Full name -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Full name"
-                android:textColor="#333333"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvFullName"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@drawable/input_background"
-                android:gravity="center_vertical|start"
-                android:paddingHorizontal="12dp"
-                android:text="Bndri Pratama"
-                android:textColor="#666666" />
-
-            <!-- Email -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Email address"
-                android:textColor="#333333"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvEmail"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@drawable/input_background"
-                android:gravity="center_vertical|start"
-                android:paddingHorizontal="12dp"
-                android:text="andri@example.com"
-                android:textColor="#666666" />
-
-            <!-- Logout Button -->
+            <!-- Login Button -->
             <Button
-                android:id="@+id/btnLogout"
-                android:layout_width="match_parent"
+                android:id="@+id/btn_login"
+                android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:layout_marginTop="32dp"
-                android:backgroundTint="#3F51B5"
-                android:text="Logout"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF" />
+                android:text="Login"
+                android:textColor="#FFFFFF"
+                android:enabled="false"
+                android:layout_marginEnd="15dp"/>
+
+            <!-- Register Button -->
+            <Button
+                android:id="@+id/btn_register"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:text="Register"
+                android:textColor="#FFFFFF"
+                android:enabled="false"/>
         </LinearLayout>
+
+        <!-- Collection Button -->
+        <Button
+            android:id="@+id/btn_collection"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="Collection"
+            android:textColor="#FFFFFF"
+            android:enabled="false"/>
+
+        <!-- Scan QR Button -->
+        <Button
+            android:id="@+id/btn_scan_qr"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="Collection"
+            android:textColor="#FFFFFF"
+            android:enabled="false"/>
+
+        <!-- Merchandise Button -->
+        <Button
+            android:id="@+id/btn_merchandise"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="Merchandise"
+            android:textColor="#FFFFFF"
+            android:enabled="false"/>
+
+        <!-- Profile Button -->
+        <Button
+            android:id="@+id/btn_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="Profile"
+            android:textColor="#FFFFFF"
+            android:enabled="true"/>
     </LinearLayout>
 </ScrollView>

@@ -1,4 +1,4 @@
-package com.example.collectify;
+package com.example.collectify.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +7,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
+import com.example.collectify.R;
+
+public class ProfileActivity extends AppCompatActivity {
 
     TextView avatar, tvUsername, tvJoinDate, tvFullName, tvEmail;
     Button btnLogout;
@@ -15,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_profile);
 
         avatar = findViewById(R.id.avatar);
         tvUsername = findViewById(R.id.tvUsername);
@@ -45,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Tambahkan logika logout sesuai kebutuhan
-                startActivity(new Intent(MainActivity.this, MainActivity.class));
+                startActivity(new Intent(ProfileActivity.this, MainActivity.class));
                 finish(); // Menutup halaman profile
             }
         });
