@@ -67,7 +67,7 @@
             android:id="@+id/btn_scan_qr"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:text="Collection"
+            android:text="Scan QR"
             android:textColor="#FFFFFF"
             android:enabled="false"/>
 
