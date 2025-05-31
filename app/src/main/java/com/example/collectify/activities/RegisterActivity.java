@@ -20,7 +20,7 @@ import com.example.collectify.db.SupabaseClient;
 import org.json.JSONObject;
 
 public class RegisterActivity extends AppCompatActivity {
-    EditText emailInput, passwordInput;
+    EditText emailInput, passwordInput, usernameInput, fullNameInput;
     Button registerButton;
 
     @Override
@@ -30,6 +30,8 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         emailInput = findViewById(R.id.emailInput);
+        usernameInput = findViewById(R.id.usernameInput);
+        fullNameInput = findViewById(R.id.fullNameInput);
         passwordInput = findViewById(R.id.passwordInput);
         registerButton = findViewById(R.id.registerButton);
 
@@ -40,36 +42,35 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         registerButton.setOnClickListener(v -> {
+            String username = usernameInput.getText().toString().trim();
+            String fullName = fullNameInput.getText().toString().trim();
             String email = emailInput.getText().toString().trim();
             String password = passwordInput.getText().toString();
 
-            if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Email dan password harus diisi", Toast.LENGTH_SHORT).show();
+            if (username.isEmpty() || fullName.isEmpty() || email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Semua field harus diisi", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             new Thread(() -> {
                 try {
-                    String response = SupabaseClient.registerUser(email, password);
+                    String userId = SupabaseClient.registerUser(email, password);
 
-                    JSONObject resJson = new JSONObject(response);
+// Insert user ke tabel DB
+                    SupabaseClient.insertUserToTable(userId, username, fullName, email);
 
-                    if (resJson.has("id")) {
-                        // Sukses register
-                        runOnUiThread(() -> {
-                            Toast.makeText(this, "Registrasi berhasil. Silakan login.", Toast.LENGTH_LONG).show();
-                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                            finish();
-                        });
-                    } else {
-                        // Jika tidak ada "id", berarti gagal
-                        runOnUiThread(() -> Toast.makeText(this, "Gagal registrasi: " + resJson.toString(), Toast.LENGTH_LONG).show());
-                    }
+                    runOnUiThread(() -> {
+                        Toast.makeText(this, "Registrasi berhasil. Silakan login.", Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                        finish();
+                    });
+
                 } catch (Exception e) {
                     runOnUiThread(() ->
                             Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show());
                 }
             }).start();
+
         });
     }
 }

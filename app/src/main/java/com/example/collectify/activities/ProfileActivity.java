@@ -5,10 +5,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.collectify.R;
+import com.example.collectify.db.SupabaseClient;
 import com.example.collectify.utils.SessionManager;
+
+import org.json.JSONObject;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -30,21 +35,9 @@ public class ProfileActivity extends AppCompatActivity {
         tvEmail = findViewById(R.id.tvEmail);
         btnLogout = findViewById(R.id.btnLogout);
 
-        // Dummy data (ganti dengan data dari Firebase / SharedPreferences)
-        String username = "bndri123";
-        String joinDate = "27 Mei 2025";
-        String fullName = "Bndri Pratama";
-        String email = "andri@example.com";
+        // Ambil data user dari Supabase
+        loadUserData();
 
-        tvUsername.setText(username);
-        tvJoinDate.setText("Bergabung sejak: " + joinDate);
-        tvFullName.setText(fullName);
-        tvEmail.setText(email);
-
-        // Avatar berisi huruf pertama dari username
-        if (username.length() > 0) {
-            avatar.setText(String.valueOf(username.charAt(0)).toUpperCase());
-        }
 
         // Fungsi Logout
         btnLogout.setOnClickListener(new View.OnClickListener() {
@@ -56,5 +49,37 @@ public class ProfileActivity extends AppCompatActivity {
                 finishAffinity();
             }
         });
+    }
+
+    private void loadUserData() {
+        new Thread(() -> {
+            try {
+                String accessToken = sessionManager.getAccessToken();
+                String userId = sessionManager.getUserId();
+
+                if (accessToken == null || userId == null) {
+                    runOnUiThread(() -> Toast.makeText(this, "Session tidak ditemukan", Toast.LENGTH_SHORT).show());
+                    return;
+                }
+
+                JSONObject userData = SupabaseClient.getUserData(accessToken, userId);
+
+                String username = userData.getString("username");
+                String joinDate = userData.getString("created_at").split("T")[0];
+                String fullName = userData.getString("full_name");
+                String email = userData.getString("email");
+
+                runOnUiThread(() -> {
+                    tvUsername.setText(username);
+                    tvJoinDate.setText(joinDate);
+                    tvFullName.setText(fullName);
+                    tvEmail.setText(email);
+                    avatar.setText(String.valueOf(username.charAt(0)).toUpperCase());
+                });
+
+            } catch (Exception e) {
+                runOnUiThread(() -> Toast.makeText(this, "Gagal memuat profil: " + e.getMessage(), Toast.LENGTH_LONG).show());
+            }
+        }).start();
     }
 }

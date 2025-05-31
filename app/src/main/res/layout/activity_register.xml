@@ -41,6 +41,28 @@
             android:inputType="textEmailAddress"
             android:layout_marginBottom="16dp" />
 
+        <!-- Username -->
+        <EditText
+            android:id="@+id/usernameInput"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="Username"
+            android:background="@drawable/edittext_background"
+            android:padding="12dp"
+            android:inputType="textPersonName"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Full Name -->
+        <EditText
+            android:id="@+id/fullNameInput"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="Full Name"
+            android:background="@drawable/edittext_background"
+            android:padding="12dp"
+            android:inputType="textPersonName"
+            android:layout_marginBottom="16dp" />
+
         <!-- Password -->
         <EditText
             android:id="@+id/passwordInput"

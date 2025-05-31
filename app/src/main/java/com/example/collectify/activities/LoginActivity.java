@@ -57,10 +57,15 @@ public class LoginActivity extends AppCompatActivity {
                     String response = SupabaseClient.loginUser(email, password);
 
                     JSONObject resJson = new JSONObject(response);
-                    if (resJson.has("access_token")) {
+                    if (resJson.has("access_token") && resJson.has("user")) {
+
+                        String accessToken = resJson.getString("access_token");
+                        JSONObject user = resJson.getJSONObject("user");
+                        String userId = user.getString("id");
+
                         // Simpan session
                         SessionManager sessionManager = new SessionManager(LoginActivity.this);
-                        sessionManager.login();
+                        sessionManager.saveSession(accessToken, userId);
 
                         runOnUiThread(() -> {
                             Toast.makeText(this, "Login berhasil", Toast.LENGTH_SHORT).show();
