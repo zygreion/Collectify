@@ -7,6 +7,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.collectify.R;
+import com.example.collectify.utils.SessionManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,6 +18,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        SessionManager sessionManager = new SessionManager(this);
+
         btnLogin = findViewById(R.id.btn_login);
         btnRegister = findViewById(R.id.btn_register);
         btnCollection = findViewById(R.id.btn_collection);
@@ -24,64 +27,43 @@ public class MainActivity extends AppCompatActivity {
         btnMerchandise = findViewById(R.id.btn_merchandise);
         btnProfile = findViewById(R.id.btn_profile);
 
-//        // Fungsi Login
-//        btnLogin.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                // Membuka halaman profile
-//                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-//                finish();
-//            }
-//        });
-//
-//        // Fungsi Register
-//        btnRegister.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                // Membuka halaman profile
-//                startActivity(new Intent(MainActivity.this, RegisterActivity.class));
-//                finish();
-//            }
-//        });
-//
-//        // Fungsi Collection
-//        btnCollection.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                // Membuka halaman profile
-//                startActivity(new Intent(MainActivity.this, CollectionActivity.class));
-//                finish();
-//            }
-//        });
-//
-//        // Fungsi Scan QR
-//        btnScanQR.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                // Membuka halaman profile
-//                startActivity(new Intent(MainActivity.this, ScanQRActivity.class));
-//                finish();
-//            }
-//        });
-//
-//        // Fungsi Merchandise
-//        btnProfile.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                // Membuka halaman profile
-//                startActivity(new Intent(MainActivity.this, MerchandiseActivity.class));
-//                finish();
-//            }
-//        });
+        if (!sessionManager.isLoggedIn()) {
+            // Tampilkan hanya login dan register
+            btnLogin.setVisibility(View.VISIBLE);
+            btnRegister.setVisibility(View.VISIBLE);
 
-        // Fungsi Profile
-        btnProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Membuka halaman profile
-                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+            btnCollection.setVisibility(View.GONE);
+            btnScanQR.setVisibility(View.GONE);
+            btnMerchandise.setVisibility(View.GONE);
+            btnProfile.setVisibility(View.GONE);
+
+            btnLogin.setOnClickListener(view -> {
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 finish();
-            }
-        });
+            });
+
+            btnRegister.setOnClickListener(view -> {
+                startActivity(new Intent(MainActivity.this, RegisterActivity.class));
+                finish();
+            });
+        } else {
+            // User sudah login
+            btnLogin.setVisibility(View.GONE);
+            btnRegister.setVisibility(View.GONE);
+
+            btnCollection.setVisibility(View.VISIBLE);
+            btnScanQR.setVisibility(View.VISIBLE);
+            btnMerchandise.setVisibility(View.VISIBLE);
+            btnProfile.setVisibility(View.VISIBLE);
+
+            // Aksi tombol-tombol setelah login
+//            btnCollection.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, CollectionActivity.class)));
+
+//            btnScanQR.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, ScanQRActivity.class)));
+
+//            btnMerchandise.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, MerchandiseActivity.class)));
+
+            btnProfile.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, ProfileActivity.class)));
+        }
     }
 }
