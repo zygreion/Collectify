@@ -28,24 +28,9 @@ public class MainActivity extends AppCompatActivity {
         btnProfile = findViewById(R.id.btn_profile);
 
         if (!sessionManager.isLoggedIn()) {
-            // Tampilkan hanya login dan register
-            btnLogin.setVisibility(View.VISIBLE);
-            btnRegister.setVisibility(View.VISIBLE);
-
-            btnCollection.setVisibility(View.GONE);
-            btnScanQR.setVisibility(View.GONE);
-            btnMerchandise.setVisibility(View.GONE);
-            btnProfile.setVisibility(View.GONE);
-
-            btnLogin.setOnClickListener(view -> {
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                finish();
-            });
-
-            btnRegister.setOnClickListener(view -> {
-                startActivity(new Intent(MainActivity.this, RegisterActivity.class));
-                finish();
-            });
+            // Redirect langsung ke LoginActivity
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            finish();
         } else {
             // User sudah login
             btnLogin.setVisibility(View.GONE);
