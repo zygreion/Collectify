@@ -2,12 +2,19 @@ package com.example.collectify.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.collectify.R;
 import com.example.collectify.utils.SessionManager;
+import com.google.zxing.client.android.Intents;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,11 +51,35 @@ public class MainActivity extends AppCompatActivity {
             // Aksi tombol-tombol setelah login
 //            btnCollection.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, CollectionActivity.class)));
 
-//            btnScanQR.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, ScanQRActivity.class)));
+            btnScanQR.setOnClickListener(view -> {
+                ScanOptions options = new ScanOptions()
+                        .setOrientationLocked(false)
+                        .setCaptureActivity(ScanQRActivity.class)
+                        .setDesiredBarcodeFormats(ScanOptions.QR_CODE);
+                barcodeLauncher.launch(options);
+            });
 
 //            btnMerchandise.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, MerchandiseActivity.class)));
 
             btnProfile.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, ProfileActivity.class)));
         }
     }
+
+    // Untuk mendapatkan hasil Scan QR code
+    private final ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(new ScanContract(),
+            result -> {
+                if(result.getContents() == null) {
+                    Intent originalIntent = result.getOriginalIntent();
+                    if (originalIntent == null) {
+                        Log.d("MainActivity", "Cancelled scan");
+                        Toast.makeText(MainActivity.this, "Cancelled", Toast.LENGTH_LONG).show();
+                    } else if(originalIntent.hasExtra(Intents.Scan.MISSING_CAMERA_PERMISSION)) {
+                        Log.d("MainActivity", "Cancelled scan due to missing camera permission");
+                        Toast.makeText(MainActivity.this, "Cancelled due to missing camera permission", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Log.d("MainActivity", "Scanned");
+                    Toast.makeText(MainActivity.this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+                }
+            });
 }
