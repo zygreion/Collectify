@@ -18,6 +18,11 @@
             android:name=".activities.MerchandiseActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.ScanQRActivity"
+            android:screenOrientation="fullSensor"
+            android:stateNotNeeded="true"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
             android:name=".activities.LoginActivity"
             android:exported="false" />
         <activity
