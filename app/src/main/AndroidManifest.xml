@@ -15,6 +15,9 @@
         android:theme="@style/Theme.Collectify"
         tools:targetApi="31">
         <activity
+            android:name=".activities.MerchandiseActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.ScanQRActivity"
             android:screenOrientation="fullSensor"
             android:stateNotNeeded="true"

@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 barcodeLauncher.launch(options);
             });
 
-//            btnMerchandise.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, MerchandiseActivity.class)));
+            btnMerchandise.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, MerchandiseActivity.class)));
 
             btnProfile.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, ProfileActivity.class)));
         }
