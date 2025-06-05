@@ -1,0 +1,35 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="160dp">
+
+        <ImageView
+            android:id="@+id/imageCollection"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:background="@drawable/rounded_image"/>
+
+        <View
+            android:id="@+id/darkOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#DD000000"
+            android:visibility="gone"/>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/nameCollection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nama Koleksi"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:paddingTop="4dp"/>
+</LinearLayout>

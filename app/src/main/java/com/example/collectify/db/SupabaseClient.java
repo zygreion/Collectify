@@ -1,6 +1,7 @@
 package com.example.collectify.db;
 
 import android.os.Build;
+import android.util.Log;
 
 import com.example.collectify.model.MerchandiseModel;
 
@@ -163,6 +164,30 @@ public class SupabaseClient {
         }
 
         return merchandiseList;
+    }
+
+
+    public static JSONArray getAllCollections() throws IOException, JSONException {
+        URL url = new URL(SUPABASE_URL + "/rest/v1/collection?select=*");
+
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("apikey", API_KEY);
+        conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Accept", "application/json");
+
+        int responseCode = conn.getResponseCode();
+        Log.d("SupabaseClient", "Response code: " + responseCode);
+
+        String response = readResponse(conn);
+        Log.d("SupabaseClient", "Response body: " + response);
+
+        if (responseCode >= 400) {
+            throw new IOException("Failed to fetch data: " + response);
+        }
+
+        return new JSONArray(response);
     }
 
 
