@@ -168,7 +168,7 @@ public class SupabaseClient {
 
 
     public static JSONArray getAllCollections() throws IOException, JSONException {
-        URL url = new URL(SUPABASE_URL + "/rest/v1/collection?select=*");
+        URL url = new URL(SUPABASE_URL + "/rest/v1/stamp?select=*");
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
