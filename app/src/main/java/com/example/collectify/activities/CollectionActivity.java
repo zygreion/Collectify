@@ -3,30 +3,24 @@ package com.example.collectify.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.collectify.R;
 import com.example.collectify.adapter.CollectionAdapter;
 import com.example.collectify.db.SupabaseClient;
 import com.example.collectify.model.CollectionModel;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,8 +28,9 @@ public class CollectionActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     CollectionAdapter adapter;
-    List<CollectionModel> CollectionModels = new ArrayList<>();
+    List<CollectionModel> collectionModels = new ArrayList<>();
 
+    BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,17 +40,56 @@ public class CollectionActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewCollection);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
-        adapter = new CollectionAdapter(this, CollectionModels);
+        adapter = new CollectionAdapter(this, collectionModels);
         recyclerView.setAdapter(adapter);
 
+        setupBottomNavigation();
+
         getAllCollections();
+    }
+
+    private void setupBottomNavigation() {
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        // Set selected menu item sesuai halaman ini
+        bottomNavigationView.setSelectedItemId(R.id.nav_collection);
+
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull android.view.MenuItem item) {
+                int id = item.getItemId();
+
+                if (id == R.id.nav_collection) {
+                    // Sudah di CollectionActivity, tidak perlu aksi
+                    return true;
+                } else if (id == R.id.nav_scan) {
+                    // Buka ScanQRActivity
+                    startActivity(new Intent(CollectionActivity.this, ScanQRActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                } else if (id == R.id.nav_home) {
+                    startActivity(new Intent(CollectionActivity.this, HomeActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                } else if (id == R.id.nav_merchandise) {
+                    startActivity(new Intent(CollectionActivity.this, MerchandiseActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                } else if (id == R.id.nav_profile) {
+                    startActivity(new Intent(CollectionActivity.this, ProfileActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     private void getAllCollections() {
         new Thread(() -> {
             try {
                 JSONArray jsonArray = SupabaseClient.getAllCollections();
-                CollectionModels.clear();
+                collectionModels.clear();
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject obj = jsonArray.getJSONObject(i);
@@ -69,7 +103,7 @@ public class CollectionActivity extends AppCompatActivity {
                     item.deskripsi = obj.getString("deskripsi");
                     item.sudah_dikoleksi = obj.optInt("sudah_dikoleksi", 0);
 
-                    CollectionModels.add(item);
+                    collectionModels.add(item);
                 }
 
                 runOnUiThread(() -> adapter.notifyDataSetChanged());
@@ -77,19 +111,6 @@ public class CollectionActivity extends AppCompatActivity {
             } catch (IOException | JSONException e) {
                 Log.e("CollectionActivity", "Error fetching collections", e);
             }
-
         }).start();
-    }
-
-    private String readStream(InputStream in) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        StringBuilder sb = new StringBuilder();
-        String line;
-
-        while ((line = reader.readLine()) != null)
-            sb.append(line);
-
-        reader.close();
-        return sb.toString();
     }
 }
