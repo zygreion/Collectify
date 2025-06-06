@@ -1,6 +1,9 @@
 package com.example.collectify.db;
 
 import android.os.Build;
+import android.util.Log;
+
+import com.example.collectify.model.MerchandiseModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,6 +16,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class SupabaseClient {
@@ -134,5 +139,56 @@ public class SupabaseClient {
 
         return jsonArray.getJSONObject(0);
     }
+
+    public static List<MerchandiseModel> fetchMerchandise() throws IOException, JSONException {
+        List<MerchandiseModel> merchandiseList = new ArrayList<>();
+
+        URL url = new URL(SUPABASE_URL + "/rest/v1/merchandise?select=*");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("apikey", API_KEY);
+        conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
+        conn.setRequestProperty("Content-Type", "application/json");
+
+        String response = readResponse(conn);
+        JSONArray jsonArray = new JSONArray(response);
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject obj = jsonArray.getJSONObject(i);
+            int id = obj.getInt("id");
+            String name = obj.getString("name");
+            String imageUrl = obj.getString("image_url");
+            int stock = obj.getInt("stock");
+
+            merchandiseList.add(new MerchandiseModel(id, name, imageUrl, stock));
+        }
+
+        return merchandiseList;
+    }
+
+
+    public static JSONArray getAllCollections() throws IOException, JSONException {
+        URL url = new URL(SUPABASE_URL + "/rest/v1/collection?select=*");
+
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("apikey", API_KEY);
+        conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Accept", "application/json");
+
+        int responseCode = conn.getResponseCode();
+        Log.d("SupabaseClient", "Response code: " + responseCode);
+
+        String response = readResponse(conn);
+        Log.d("SupabaseClient", "Response body: " + response);
+
+        if (responseCode >= 400) {
+            throw new IOException("Failed to fetch data: " + response);
+        }
+
+        return new JSONArray(response);
+    }
+
 
 }

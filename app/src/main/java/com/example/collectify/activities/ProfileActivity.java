@@ -45,7 +45,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 sessionManager.logout();
 
-                startActivity(new Intent(ProfileActivity.this, MainActivity.class));
+                startActivity(new Intent(ProfileActivity.this, HomeActivity.class));
                 finishAffinity();
             }
         });

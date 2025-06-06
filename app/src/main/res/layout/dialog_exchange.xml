@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/dialogImage"
+        android:layout_width="150dp"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/img"
+        />
+
+    <TextView
+        android:id="@+id/dialogStock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stock tersisa: 0"
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/dialogStempel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stempel yang dibutuhkan: 12"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/buttonConfirmTukar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tukar"/>
+</LinearLayout>
