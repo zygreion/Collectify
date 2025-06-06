@@ -5,7 +5,9 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-public class CollectionModel {
+import java.io.Serializable;
+
+public class CollectionModel implements Serializable {
     public int id;
     public String name;
     public String image_url;
