@@ -14,4 +14,5 @@ public class CollectionModel {
     public String harga_tiket;
     public String deskripsi;
     public int sudah_dikoleksi;
+    public String lokasi;
 }
