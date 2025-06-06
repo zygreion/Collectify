@@ -49,7 +49,7 @@ public class HomeActivity extends AppCompatActivity {
             btnProfile.setVisibility(View.VISIBLE);
 
             // Aksi tombol-tombol setelah login
-//            btnCollection.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, CollectionActivity.class)));
+            btnCollection.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, CollectionActivity.class)));
 
             btnScanQR.setOnClickListener(view -> {
                 ScanOptions options = new ScanOptions()

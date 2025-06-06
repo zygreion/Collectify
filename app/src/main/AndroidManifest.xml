@@ -24,6 +24,12 @@
             android:stateNotNeeded="true"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
+            android:name=".activities.DescriptionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CollectionActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.LoginActivity"
             android:exported="false" />
         <activity
