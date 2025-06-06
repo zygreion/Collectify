@@ -62,6 +62,11 @@ public class MainActivity extends AppCompatActivity {
             btnMerchandise.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, MerchandiseActivity.class)));
 
             btnProfile.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, ProfileActivity.class)));
+
+            btnCollection.setOnClickListener(view -> {
+                Intent intent = new Intent(MainActivity.this, CollectionActivity.class);
+                startActivity(intent);
+            });
         }
     }
 
