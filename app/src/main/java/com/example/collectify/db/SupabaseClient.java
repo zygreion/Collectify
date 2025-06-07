@@ -154,7 +154,8 @@ public class SupabaseClient {
     }
 
     public static JSONArray getAllCollections() throws IOException, JSONException {
-        URL url = new URL(SUPABASE_URL + "/rest/v1/collection?select=*");
+        URL url = new URL(SUPABASE_URL + "/rest/v1/stamp?select=*");
+
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("apikey", API_KEY);
@@ -164,12 +165,14 @@ public class SupabaseClient {
 
         int responseCode = conn.getResponseCode();
         Log.d("SupabaseClient", "Response code: " + responseCode);
+
         String response = readResponse(conn);
         Log.d("SupabaseClient", "Response body: " + response);
 
         if (responseCode >= 400) {
             throw new IOException("Failed to fetch data: " + response);
         }
+
         return new JSONArray(response);
     }
 
