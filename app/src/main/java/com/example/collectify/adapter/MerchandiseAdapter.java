@@ -15,8 +15,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.collectify.R;
+import com.example.collectify.activities.MerchandiseActivity;
+import com.example.collectify.db.SupabaseClient;
 import com.example.collectify.model.MerchandiseModel;
+import com.example.collectify.utils.SessionManager;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.List;
 
 public class MerchandiseAdapter extends RecyclerView.Adapter<MerchandiseAdapter.ViewHolder> {
@@ -66,32 +72,38 @@ public class MerchandiseAdapter extends RecyclerView.Adapter<MerchandiseAdapter.
                     .into(dialogImage);
 
             dialogStock.setText("Stock tersisa: " + item.stock);
-            dialogStempel.setText("Stempel yang dibutuhkan: 12");
+            dialogStempel.setText("Stempel yang dibutuhkan: 2");
 
             AlertDialog dialog = builder.create();
             dialog.show();
 
             buttonConfirm.setOnClickListener(confirmView -> {
-                // Logika penukaran
-                if (item.stock > 0) {
-                    item.stock -= 1; // Kurangi stok secara lokal
-                    notifyItemChanged(holder.getAdapterPosition());
+                SessionManager sessionManager = new SessionManager(context);
+                String userId = sessionManager.getUserId();
 
-                    dialog.dismiss();
+                new Thread(() -> {
+                    try {
+                        String result = SupabaseClient.exchangeMerchandise(userId, item.id);
 
-                    // Tampilkan Toast jika context masih aktif
-                    if (context instanceof android.app.Activity && !((android.app.Activity) context).isFinishing()) {
-                        Toast.makeText(context, "Penukaran berhasil!", Toast.LENGTH_SHORT).show();
+
+                        ((android.app.Activity) context).runOnUiThread(() -> {
+                            if (result.equals("success")) {
+                                item.stock -= 1; // Update lokal
+                                notifyItemChanged(holder.getAdapterPosition());
+                                dialog.dismiss();
+                                Toast.makeText(context, "Penukaran berhasil!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "Penukaran gagal: " + result, Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } catch (IOException | JSONException e) {
+                        e.printStackTrace();
+                        ((android.app.Activity) context).runOnUiThread(() ->
+                                Toast.makeText(context, "Terjadi kesalahan saat menukar!", Toast.LENGTH_SHORT).show());
                     }
-
-                    // TODO: Kirim request ke Supabase atau backend untuk update stok, jika perlu
-                } else {
-                    // Tampilkan Toast jika context masih aktif
-                    if (context instanceof android.app.Activity && !((android.app.Activity) context).isFinishing()) {
-                        Toast.makeText(context, "Stok habis!", Toast.LENGTH_SHORT).show();
-                    }
-                }
+                }).start();
             });
+
         });
     }
 

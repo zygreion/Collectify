@@ -15,10 +15,13 @@
         android:theme="@style/Theme.Collectify"
         tools:targetApi="31">
         <activity
-            android:name=".activities.DescriptionCollectionActivity"
+            android:name=".activities.MyMerchandiseActivity"
             android:exported="false" />
         <activity
             android:name=".activities.MerchandiseActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.DescriptionCollectionActivity"
             android:exported="false" />
         <activity
             android:name=".activities.ScanQRActivity"
