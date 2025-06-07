@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.collectify.R;
 import com.example.collectify.db.SupabaseClient;
 import com.example.collectify.utils.SessionManager;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONObject;
 
@@ -35,19 +36,40 @@ public class ProfileActivity extends AppCompatActivity {
         tvEmail = findViewById(R.id.tvEmail);
         btnLogout = findViewById(R.id.btnLogout);
 
-        // Ambil data user dari Supabase
         loadUserData();
 
+        btnLogout.setOnClickListener(view -> {
+            sessionManager.logout();
+            startActivity(new Intent(ProfileActivity.this, HomeActivity.class));
+            finishAffinity();
+        });
 
-        // Fungsi Logout
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sessionManager.logout();
+        // Setup Bottom Navigation
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.nav_profile);
 
-                startActivity(new Intent(ProfileActivity.this, HomeActivity.class));
-                finishAffinity();
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.nav_home) {
+                startActivity(new Intent(this, HomeActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (itemId == R.id.nav_collection) {
+                startActivity(new Intent(this, CollectionActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (itemId == R.id.nav_scan) {
+                startActivity(new Intent(this, ScanQRActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (itemId == R.id.nav_merchandise) {
+                startActivity(new Intent(this, MerchandiseActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (itemId == R.id.nav_profile) {
+                return true;
             }
+            return false;
         });
     }
 

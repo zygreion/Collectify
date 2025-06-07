@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ScanQRActivity">
+    tools:context=".activities.ScanQRActivity"
+    android:id="@+id/main">
 
     <com.journeyapps.barcodescanner.DecoratedBarcodeView
         android:id="@+id/zxing_barcode_scanner"
@@ -13,13 +14,16 @@
         app:zxing_scanner_layout="@layout/custom_barcode_scanner">
     </com.journeyapps.barcodescanner.DecoratedBarcodeView>
 
-    <com.google.android.material.button.MaterialButton
+    <ImageButton
         android:id="@+id/btn_scan_qr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/qr_button_msg"
+        android:padding="20dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="60dp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_marginBottom="70dp"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="Scan QR"
+        android:background="@drawable/bg_button_selector"
+        android:src="@drawable/search_30dp"/>
 
 </RelativeLayout>
