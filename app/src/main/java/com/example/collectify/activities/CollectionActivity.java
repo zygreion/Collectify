@@ -102,6 +102,7 @@ public class CollectionActivity extends AppCompatActivity {
                     item.harga_tiket = obj.getString("harga_tiket");
                     item.deskripsi = obj.getString("deskripsi");
                     item.sudah_dikoleksi = obj.optInt("sudah_dikoleksi", 0);
+                    item.lokasi = obj.getString("lokasi");
 
                     collectionModels.add(item);
                 }
