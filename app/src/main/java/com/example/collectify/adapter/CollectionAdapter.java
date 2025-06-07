@@ -54,12 +54,20 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
 
         Glide.with(context)
                 .load(item.image_url)
-                .placeholder(R.drawable.loading) // optional
+                .placeholder(R.drawable.loading)
                 .into(holder.imageView);
 
-        // Apply dark overlay if belum dikoleksi
+        // Overlay jika belum dikoleksi
         holder.overlayView.setVisibility(item.sudah_dikoleksi == 0 ? View.VISIBLE : View.GONE);
+
+        // Tambahkan klik listener
+        holder.imageView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, com.example.collectify.activities.DescriptionCollectionActivity.class);
+            intent.putExtra("collection", item);
+            context.startActivity(intent);
+        });
     }
+
 
     @Override
     public int getItemCount() {
