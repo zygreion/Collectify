@@ -27,6 +27,7 @@
         android:layout_gravity="bottom|center_horizontal"
         android:background="@color/zxing_transparent"
         android:text="@string/qr_prompt"
-        android:textColor="@color/zxing_status_text"/>
+        android:textColor="@color/zxing_status_text"
+        android:layout_marginBottom="20dp"/>
 
 </merge>

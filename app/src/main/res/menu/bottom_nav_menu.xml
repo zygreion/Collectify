@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/home"
+        android:title="Home" />
+    <item
         android:id="@+id/nav_collection"
         android:icon="@drawable/collection"
         android:title="Collection" />
@@ -8,10 +12,6 @@
         android:id="@+id/nav_scan"
         android:icon="@drawable/qrscan"
         android:title="Scan QR" />
-    <item
-        android:id="@+id/nav_home"
-        android:icon="@drawable/home"
-        android:title="Home" />
     <item
         android:id="@+id/nav_merchandise"
         android:icon="@drawable/merch"

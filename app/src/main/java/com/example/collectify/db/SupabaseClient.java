@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.example.collectify.model.MerchandiseModel;
 import com.example.collectify.model.MyMerchandiseModel;
+import com.example.collectify.model.ScanQRResultModel;
+import com.example.collectify.model.StampModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,6 +18,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -243,5 +246,93 @@ public class SupabaseClient {
             return myMerchandiseList;
         }
         return new ArrayList<>();
+    }
+
+    public static StampModel getStampByQrString(String qrString) throws IOException, JSONException {
+        StampModel stamp = new StampModel(-999, "Unknown", -999);
+        URL url = new URL(SUPABASE_URL + "/rest/v1/stamp?select=*&qr_string=eq." + qrString);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("apikey", API_KEY);
+        conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
+
+        String response = readResponse(conn);
+        JSONArray jsonArray = new JSONArray(response);
+
+        // Stamp with given QR String is found
+        if (jsonArray.length() == 1) {
+            JSONObject obj = jsonArray.getJSONObject(0);
+
+            stamp.id = obj.getInt("id");
+            stamp.name = obj.getString("name");
+            stamp.collection_id = obj.getInt("collection_id");
+        } else {
+            Log.e("SupabaseClient", "Stempel tidak valid!");
+        }
+
+        // If not, return model with id = -999 and name = "Unknown
+        return stamp;
+    }
+
+    public static ScanQRResultModel scanQRCode(String userId, String qrString) throws IOException, JSONException {
+        StampModel stamp = getStampByQrString(qrString);
+        ScanQRResultModel scanQRResult = new ScanQRResultModel(0,stamp);
+        // Jika Stamp tidak ditemukan, tidak bisa mencatat pemindaian
+        if (stamp.id == -999) {
+            Log.d("SupabaseClient", "Stamp dengan QR String" + qrString + " tidak ditemukan!");
+            scanQRResult.code = ScanQRResultModel.CODE_STAMP_NOT_FOUND;
+            return scanQRResult;
+        }
+
+        scanQRResult.code = ScanQRResultModel.CODE_STAMP_FOUND;
+
+        URL url = new URL(SUPABASE_URL + "/rest/v1/user_stamp");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("apikey", API_KEY);
+        conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setDoOutput(true);
+
+        JSONObject body = new JSONObject();
+        try {
+            body.put("user_id", userId);
+            body.put("stamp_id", stamp.id);
+        } catch (JSONException e) {
+            throw new IOException("Failed to build JSON payload", e);
+        }
+
+        try (OutputStream os = conn.getOutputStream()) {
+            byte[] input = body.toString().getBytes(StandardCharsets.UTF_8);
+            os.write(input, 0, input.length);
+        }
+
+        int code = conn.getResponseCode();
+        if (code >= 200 && code < 400) {
+            Log.i("SupabaseClient", "Berhasil scan QR String" + qrString + " oleh userId " + userId);
+            scanQRResult.code = ScanQRResultModel.CODE_STAMP_SCAN_SUCCESS;
+        } else if (code >= 400) {
+            InputStream errorStream = conn.getErrorStream();
+            String error = new BufferedReader(new InputStreamReader(errorStream)).lines().collect(Collectors.joining("\n"));
+
+            // Coba parse JSON dari error response
+            try {
+                JSONObject errorJson = new JSONObject(error);
+                String errCode = errorJson.optString("code");
+                String errMessage = errorJson.optString("message");
+                String errDetails = errorJson.optString("details");
+
+                Log.e("SupabaseClient", "Kode Error: " + errCode);
+                Log.e("SupabaseClient", "Pesan Error: " + errMessage);
+                Log.e("SupabaseClient", "Detail: " + errDetails);
+
+                // Bisa juga disimpan di model kalau mau ditampilkan ke user
+                scanQRResult.code = ScanQRResultModel.CODE_STAMP_ALREADY_SCANNED;
+            } catch (JSONException e) {
+                Log.e("SupabaseClient", "Gagal parse JSON error: " + error);
+            }
+        }
+
+        return scanQRResult;
     }
 }
