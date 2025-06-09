@@ -176,7 +176,7 @@ public class ScanQRActivity extends AppCompatActivity {
     // Metode untuk mengatur navigasi
     private void setupBottomNavigation () {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setSelectedItemId(R.id.nav_profile);
+        bottomNavigationView.setSelectedItemId(R.id.nav_scan);
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override

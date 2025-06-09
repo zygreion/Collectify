@@ -122,9 +122,9 @@ public class ProfileActivity extends AppCompatActivity {
                 } else if (id == R.id.nav_scan) {
                     startActivity(new Intent(ProfileActivity.this, ScanQRActivity.class));
                 } else if (id == R.id.nav_merchandise) {
-                    return true; // Sudah di halaman ini
+                    startActivity(new Intent(ProfileActivity.this, MerchandiseActivity.class));
                 } else if (id == R.id.nav_profile) {
-                    startActivity(new Intent(ProfileActivity.this, ProfileActivity.class));
+                    return true; // Sudah di halaman ini
                 }
 
                 overridePendingTransition(0, 0);
