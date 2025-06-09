@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast; // Untuk notifikasi singkat
 
@@ -20,6 +19,8 @@ import com.example.collectify.R;
 import com.example.collectify.db.SupabaseClient;
 import com.example.collectify.model.ScanQRResultModel;
 import com.example.collectify.utils.SessionManager;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.journeyapps.barcodescanner.CaptureManager;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.journeyapps.barcodescanner.BarcodeResult; // Import BarcodeResult
@@ -106,7 +107,7 @@ public class ScanQRActivity extends AppCompatActivity {
                     originalLeft + systemBars.left,
                     originalTop + systemBars.top,
                     originalRight + systemBars.right,
-                    originalBottom + systemBars.bottom
+                    originalBottom
             );
             return insets;
         });
@@ -128,6 +129,8 @@ public class ScanQRActivity extends AppCompatActivity {
             if (isScanning) return;
             barcodeScannerView.decodeSingle(callback);
         });
+
+        setupBottomNavigation();
     }
 
     @Override
@@ -168,5 +171,33 @@ public class ScanQRActivity extends AppCompatActivity {
         // Jangan lupakan panggilan super!
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         capture.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    // Metode untuk mengatur navigasi
+    private void setupBottomNavigation () {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.nav_profile);
+
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull android.view.MenuItem item) {
+                int id = item.getItemId();
+
+                if (id == R.id.nav_home) {
+                    startActivity(new Intent(ScanQRActivity.this, HomeActivity.class));
+                } else if (id == R.id.nav_collection) {
+                    startActivity(new Intent(ScanQRActivity.this, CollectionActivity.class));
+                } else if (id == R.id.nav_scan) {
+                    return true; // Sudah di halaman ini
+                } else if (id == R.id.nav_merchandise) {
+                    startActivity(new Intent(ScanQRActivity.this, MerchandiseActivity.class));
+                } else if (id == R.id.nav_profile) {
+                    startActivity(new Intent(ScanQRActivity.this, ProfileActivity.class));
+                }
+
+                overridePendingTransition(0, 0);
+                return true;
+            }
+        });
     }
 }
