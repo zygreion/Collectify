@@ -6,8 +6,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.collectify.R;
@@ -33,7 +38,27 @@ public class MyMerchandiseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_my_merchandise);
+
+        View mainView = findViewById(R.id.main);
+
+        // Simpan padding asli dari layout XML
+        int originalLeft = mainView.getPaddingLeft();
+        int originalTop = mainView.getPaddingTop();
+        int originalRight = mainView.getPaddingRight();
+        int originalBottom = mainView.getPaddingBottom();
+
+        ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(
+                    originalLeft + systemBars.left,
+                    originalTop + systemBars.top,
+                    originalRight + systemBars.right,
+                    originalBottom
+            );
+            return insets;
+        });
 
         recyclerView = findViewById(R.id.myMerchandiseRecyclerView);
         progressBar = findViewById(R.id.progressBar);
