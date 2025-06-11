@@ -7,12 +7,18 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.example.collectify.R;
 import com.example.collectify.db.SupabaseClient;
 import com.example.collectify.utils.SessionManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import org.json.JSONObject;
 
@@ -25,7 +31,27 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
+
+        View mainView = findViewById(R.id.main);
+
+        // Simpan padding asli dari layout XML
+        int originalLeft = mainView.getPaddingLeft();
+        int originalTop = mainView.getPaddingTop();
+        int originalRight = mainView.getPaddingRight();
+        int originalBottom = mainView.getPaddingBottom();
+
+        ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(
+                    originalLeft + systemBars.left,
+                    originalTop + systemBars.top,
+                    originalRight + systemBars.right,
+                    originalBottom
+            );
+            return insets;
+        });
 
         sessionManager = new SessionManager(this);
 
@@ -44,33 +70,7 @@ public class ProfileActivity extends AppCompatActivity {
             finishAffinity();
         });
 
-        // Setup Bottom Navigation
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setSelectedItemId(R.id.nav_profile);
-
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.nav_home) {
-                startActivity(new Intent(this, HomeActivity.class));
-                overridePendingTransition(0, 0);
-                return true;
-            } else if (itemId == R.id.nav_collection) {
-                startActivity(new Intent(this, CollectionActivity.class));
-                overridePendingTransition(0, 0);
-                return true;
-            } else if (itemId == R.id.nav_scan) {
-                startActivity(new Intent(this, ScanQRActivity.class));
-                overridePendingTransition(0, 0);
-                return true;
-            } else if (itemId == R.id.nav_merchandise) {
-                startActivity(new Intent(this, MerchandiseActivity.class));
-                overridePendingTransition(0, 0);
-                return true;
-            } else if (itemId == R.id.nav_profile) {
-                return true;
-            }
-            return false;
-        });
+        setupBottomNavigation();
     }
 
     private void loadUserData() {
@@ -103,5 +103,33 @@ public class ProfileActivity extends AppCompatActivity {
                 runOnUiThread(() -> Toast.makeText(this, "Gagal memuat profil: " + e.getMessage(), Toast.LENGTH_LONG).show());
             }
         }).start();
+    }
+
+    // Metode untuk mengatur navigasi
+    private void setupBottomNavigation () {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.nav_profile);
+
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull android.view.MenuItem item) {
+                int id = item.getItemId();
+
+                if (id == R.id.nav_home) {
+                    startActivity(new Intent(ProfileActivity.this, HomeActivity.class));
+                } else if (id == R.id.nav_collection) {
+                    startActivity(new Intent(ProfileActivity.this, CollectionActivity.class));
+                } else if (id == R.id.nav_scan) {
+                    startActivity(new Intent(ProfileActivity.this, ScanQRActivity.class));
+                } else if (id == R.id.nav_merchandise) {
+                    startActivity(new Intent(ProfileActivity.this, MerchandiseActivity.class));
+                } else if (id == R.id.nav_profile) {
+                    return true; // Sudah di halaman ini
+                }
+
+                overridePendingTransition(0, 0);
+                return true;
+            }
+        });
     }
 }

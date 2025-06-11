@@ -29,6 +29,25 @@ public class RegisterActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register);
 
+        View mainView = findViewById(R.id.main);
+
+        // Simpan padding asli dari layout XML
+        int originalLeft = mainView.getPaddingLeft();
+        int originalTop = mainView.getPaddingTop();
+        int originalRight = mainView.getPaddingRight();
+        int originalBottom = mainView.getPaddingBottom();
+
+        ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(
+                    originalLeft + systemBars.left,
+                    originalTop + systemBars.top,
+                    originalRight + systemBars.right,
+                    originalBottom
+            );
+            return insets;
+        });
+
         emailInput = findViewById(R.id.emailInput);
         usernameInput = findViewById(R.id.usernameInput);
         fullNameInput = findViewById(R.id.fullNameInput);

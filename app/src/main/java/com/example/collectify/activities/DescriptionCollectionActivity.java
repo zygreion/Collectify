@@ -1,6 +1,7 @@
 package com.example.collectify.activities;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,7 +23,27 @@ public class DescriptionCollectionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_description_collection);
+
+        View mainView = findViewById(R.id.main);
+
+        // Simpan padding asli dari layout XML
+        int originalLeft = mainView.getPaddingLeft();
+        int originalTop = mainView.getPaddingTop();
+        int originalRight = mainView.getPaddingRight();
+        int originalBottom = mainView.getPaddingBottom();
+
+        ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(
+                    originalLeft + systemBars.left,
+                    originalTop + systemBars.top,
+                    originalRight + systemBars.right,
+                    originalBottom
+            );
+            return insets;
+        });
 
         imageView = findViewById(R.id.imageView);
         lokasi = findViewById(R.id.tvLokasi);

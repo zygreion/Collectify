@@ -3,9 +3,14 @@ package com.example.collectify.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,12 +35,30 @@ public class CollectionActivity extends AppCompatActivity {
     CollectionAdapter adapter;
     List<CollectionModel> collectionModels = new ArrayList<>();
 
-    BottomNavigationView bottomNavigationView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_collection);
+
+        View mainView = findViewById(R.id.main);
+
+        // Simpan padding asli dari layout XML
+        int originalLeft = mainView.getPaddingLeft();
+        int originalTop = mainView.getPaddingTop();
+        int originalRight = mainView.getPaddingRight();
+        int originalBottom = mainView.getPaddingBottom();
+
+        ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(
+                    originalLeft + systemBars.left,
+                    originalTop + systemBars.top,
+                    originalRight + systemBars.right,
+                    originalBottom
+            );
+            return insets;
+        });
 
         recyclerView = findViewById(R.id.recyclerViewCollection);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
@@ -48,10 +71,9 @@ public class CollectionActivity extends AppCompatActivity {
         getAllCollections();
     }
 
+    // Metode untuk mengatur navigasi
     private void setupBottomNavigation() {
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
-
-        // Set selected menu item sesuai halaman ini
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.nav_collection);
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -59,28 +81,20 @@ public class CollectionActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull android.view.MenuItem item) {
                 int id = item.getItemId();
 
-                if (id == R.id.nav_collection) {
-                    // Sudah di CollectionActivity, tidak perlu aksi
-                    return true;
-                } else if (id == R.id.nav_scan) {
-                    // Buka ScanQRActivity
-                    startActivity(new Intent(CollectionActivity.this, ScanQRActivity.class));
-                    overridePendingTransition(0, 0);
-                    return true;
-                } else if (id == R.id.nav_home) {
+                if (id == R.id.nav_home) {
                     startActivity(new Intent(CollectionActivity.this, HomeActivity.class));
-                    overridePendingTransition(0, 0);
-                    return true;
+                } else if (id == R.id.nav_collection) {
+                    return true; // Sudah di halaman ini
+                } else if (id == R.id.nav_scan) {
+                    startActivity(new Intent(CollectionActivity.this, ScanQRActivity.class));
                 } else if (id == R.id.nav_merchandise) {
                     startActivity(new Intent(CollectionActivity.this, MerchandiseActivity.class));
-                    overridePendingTransition(0, 0);
-                    return true;
                 } else if (id == R.id.nav_profile) {
                     startActivity(new Intent(CollectionActivity.this, ProfileActivity.class));
-                    overridePendingTransition(0, 0);
-                    return true;
                 }
-                return false;
+
+                overridePendingTransition(0, 0);
+                return true;
             }
         });
     }
