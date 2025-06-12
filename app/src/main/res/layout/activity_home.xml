@@ -11,7 +11,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottom_navigation">
+        android:layout_above="@id/bottom_nav_container_included">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -19,102 +19,134 @@
             android:orientation="vertical">
 
             <!-- Visit -->
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="wrap_content"
                 android:layout_margin="12dp"
-                android:padding="16dp"
-                android:orientation="vertical"
-                android:background="@drawable/home_1">
+                android:background="@drawable/rounded_image"
+                android:clipToOutline="true">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:textStyle="bold"
-                    android:textSize="20sp"
-                    android:text="Visit"
-                    android:background="#AFB9B8"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:padding="16dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/home_1">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:text="Find and Visit public spot in your area!"
-                    android:textSize="16sp"
-                    android:background="#CDD6D5" />
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp"
+                        android:paddingHorizontal="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:textStyle="bold"
+                        android:textSize="20sp"
+                        android:text="Visit"
+                        android:background="@drawable/rounded_image"
+                        android:clipToOutline="true"
+                        android:backgroundTint="#AFB9B8"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp"
+                        android:paddingHorizontal="16dp"
+                        android:text="Find and Visit public spot in your area!"
+                        android:textSize="16sp"
+                        android:background="@drawable/rounded_image"
+                        android:clipToOutline="true"
+                        android:backgroundTint="#CDD6D5" />
+                </LinearLayout>
+            </FrameLayout>
 
             <!-- Collect -->
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="wrap_content"
                 android:layout_margin="12dp"
-                android:padding="16dp"
-                android:orientation="vertical"
-                android:background="@drawable/home_2">
+                android:background="@drawable/rounded_image"
+                android:clipToOutline="true">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:textStyle="bold"
-                    android:textSize="20sp"
-                    android:text="Collect"
-                    android:background="#A7A27A"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:padding="16dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/home_2">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:text="Search for QR Codes and scan them to fill  your collection!"
-                    android:textSize="16sp"
-                    android:background="#AEAA91" />
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp"
+                        android:paddingHorizontal="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:textStyle="bold"
+                        android:textSize="20sp"
+                        android:text="Collect"
+                        android:background="@drawable/rounded_image"
+                        android:clipToOutline="true"
+                        android:backgroundTint="#C3BD8E"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp"
+                        android:paddingHorizontal="16dp"
+                        android:text="Search for QR Codes and scan them to fill  your collection!"
+                        android:textSize="16sp"
+                        android:background="@drawable/rounded_image"
+                        android:clipToOutline="true"
+                        android:backgroundTint="#DCD6A6" />
+                </LinearLayout>
+            </FrameLayout>
 
             <!-- Exchange -->
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="wrap_content"
                 android:layout_margin="12dp"
-                android:padding="16dp"
-                android:orientation="vertical"
-                android:background="@drawable/home_3">
+                android:background="@drawable/rounded_image"
+                android:clipToOutline="true">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:textStyle="bold"
-                    android:textSize="20sp"
-                    android:text="Exchange"
-                    android:background="#9EB8D9"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:padding="16dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/home_3">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:text="Exchange the stamp you have for various merchandises!"
-                    android:textSize="16sp"
-                    android:background="#BDC4D7" />
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp"
+                        android:paddingHorizontal="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:textStyle="bold"
+                        android:textSize="20sp"
+                        android:text="Exchange"
+                        android:background="@drawable/rounded_image"
+                        android:clipToOutline="true"
+                        android:backgroundTint="#9EB8D9" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp"
+                        android:paddingHorizontal="16dp"
+                        android:text="Exchange the stamp you have for various merchandises!"
+                        android:textSize="16sp"
+                        android:background="@drawable/rounded_image"
+                        android:clipToOutline="true"
+                        android:backgroundTint="#BDC4D7" />
+                </LinearLayout>
+            </FrameLayout>
         </LinearLayout>
     </ScrollView>
 
-    <!-- Bottom Navigation Bar -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
+    <include
+        android:id="@+id/bottom_nav_container_included"
+        layout="@layout/layout_bottom_navigation_with_separator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="#FFFFFF"
-        android:elevation="8dp"
-        app:itemIconTint="@color/selector_nav_color"
-        app:itemTextColor="@color/selector_nav_color"
-        app:labelVisibilityMode="labeled"
-        app:menu="@menu/bottom_nav_menu"
-        android:fitsSystemWindows="true" />
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

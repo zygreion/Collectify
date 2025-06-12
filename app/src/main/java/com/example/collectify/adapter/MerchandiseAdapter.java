@@ -54,6 +54,10 @@ public class MerchandiseAdapter extends RecyclerView.Adapter<MerchandiseAdapter.
                 .override(300, 300)
                 .into(holder.image);
 
+        if (item.stock <= 0) {
+            holder.buttonTukar.setEnabled(false);
+        }
+
         holder.buttonTukar.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_exchange, null);
@@ -72,7 +76,7 @@ public class MerchandiseAdapter extends RecyclerView.Adapter<MerchandiseAdapter.
                     .into(dialogImage);
 
             dialogStock.setText("Stock tersisa: " + item.stock);
-            dialogStempel.setText("Stempel yang dibutuhkan: 2");
+            dialogStempel.setText("Stempel yang dibutuhkan: " + item.requiredStamp);
 
             AlertDialog dialog = builder.create();
             dialog.show();
@@ -84,7 +88,7 @@ public class MerchandiseAdapter extends RecyclerView.Adapter<MerchandiseAdapter.
                 new Thread(() -> {
                     try {
                         String result = SupabaseClient.exchangeMerchandise(userId, item.id);
-
+//                        String result = SupabaseClient.exchangeMerchandise2(userId, item.id);
 
                         ((android.app.Activity) context).runOnUiThread(() -> {
                             if (result.equals("success")) {
@@ -114,6 +118,7 @@ public class MerchandiseAdapter extends RecyclerView.Adapter<MerchandiseAdapter.
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        View main;
         ImageView image;
         TextView textName, textStock;
         Button buttonTukar;

@@ -67,7 +67,7 @@ public class HomeActivity extends AppCompatActivity {
                 if (id == R.id.nav_home) {
                     return true;
                 } else if (id == R.id.nav_collection) {
-                    navigate(CollectionActivity.class);
+                    navigate(CollectionSectionsActivity.class);
                 } else if (id == R.id.nav_scan) {
                     navigate(ScanQRActivity.class);
                 } else if (id == R.id.nav_merchandise) {
