@@ -1,20 +1,25 @@
 package com.example.collectify.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import androidx.annotation.NonNull;
-
 import java.io.Serializable;
 
 public class CollectionModel implements Serializable {
-    public int id;
+    public long id;
     public String name;
-    public String image_url;
-    public String qr_string;
-    public String jam_operasional;
-    public String harga_tiket;
-    public String deskripsi;
-    public int sudah_dikoleksi;
-    public String lokasi;
+    public String imageUrl;
+    public int totalStampsCollected;
+    public int totalStamps;
+
+    public CollectionModel(long id, String name, String imageUrl) {
+        this.id = id;
+        this.name = name;
+        this.imageUrl = imageUrl;
+    }
+
+    public CollectionModel(long id, String name, String imageUrl, int totalStampsCollected, int totalStamps) {
+        this.id = id;
+        this.name = name;
+        this.imageUrl = imageUrl;
+        this.totalStamps = totalStamps;
+        this.totalStampsCollected = totalStampsCollected;
+    }
 }

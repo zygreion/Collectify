@@ -1,13 +1,11 @@
-// KODE SETELAH DIPERBAIKI (SOLUSI)
 package com.example.collectify.activities;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -18,31 +16,35 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.collectify.R;
+import com.example.collectify.adapter.CollectionSectionAdapter;
 import com.example.collectify.adapter.MerchandiseAdapter;
 import com.example.collectify.db.SupabaseClient;
+import com.example.collectify.model.CollectionStampsModel;
 import com.example.collectify.model.MerchandiseModel;
+import com.example.collectify.model.StampModel;
 import com.example.collectify.utils.SessionManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.example.collectify.R; // Pastikan ini mengarah ke R Anda
 import com.google.android.material.navigation.NavigationBarView;
 
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-public class MerchandiseActivity extends AppCompatActivity {
 
-    RecyclerView recyclerView;
-    MerchandiseAdapter adapter;
-    ProgressBar progressBar;
-    TextView totalStampTextView;
+public class CollectionSectionsActivity extends AppCompatActivity {
+
+    private RecyclerView rvCollectionSection;
+    private CollectionSectionAdapter adapter;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_merchandise);
+        setContentView(R.layout.activity_collection_sections);
 
         View mainView = findViewById(R.id.main);
 
@@ -63,31 +65,35 @@ public class MerchandiseActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Inisialisasi semua View
-        totalStampTextView = findViewById(R.id.totalStampTextView);
-        recyclerView = findViewById(R.id.merchandiseRecyclerView);
-        progressBar = findViewById(R.id.progressBar);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        // Menjalankan setup untuk Bottom Navigation
-        setupBottomNavigation();
+        rvCollectionSection = findViewById(R.id.rv_collection_section);
+        progressBar = findViewById(R.id.progress_bar);
 
         // Menampilkan progress bar sambil mengambil data
         progressBar.setVisibility(View.VISIBLE);
 
+        // --- Setup RecyclerView Utama ---
+        setupRecyclerView();
+
+        // --- Setup Bottom Navigation ---
+        setupBottomNavigation();
+    }
+
+    private void setupRecyclerView() {
+        // LayoutManager untuk RecyclerView utama (vertikal)
+        rvCollectionSection.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
         // Thread untuk mengambil data merchandise dan total stamp dari Supabase
         new Thread(() -> {
             try {
-                List<MerchandiseModel> list = SupabaseClient.fetchMerchandise();
-                SessionManager sessionManager = new SessionManager(MerchandiseActivity.this);
+                SessionManager sessionManager = new SessionManager(CollectionSectionsActivity.this);
                 String userId = sessionManager.getUserId();
-                int totalStamp = SupabaseClient.fetchTotalStamp(userId);
+                List<CollectionStampsModel> collectionStampList = SupabaseClient.getCollectionsStampsFromUser(userId);
 
                 runOnUiThread(() -> {
                     if (!isFinishing() && !isDestroyed()) {
-                        adapter = new MerchandiseAdapter(MerchandiseActivity.this, list);
-                        recyclerView.setAdapter(adapter);
-                        totalStampTextView.setText("Total Stamp: " + totalStamp);
+                        adapter = new CollectionSectionAdapter(CollectionSectionsActivity.this, collectionStampList);
+                        rvCollectionSection.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
                         progressBar.setVisibility(View.GONE);
                     }
                 });
@@ -100,25 +106,14 @@ public class MerchandiseActivity extends AppCompatActivity {
                 });
             }
         }).start();
-
-        // Inisialisasi tombol kembali
-        ImageView backArrow = findViewById(R.id.backArrow);
-        backArrow.setOnClickListener(v -> finish());
-
-        // Listener untuk ikon MyMerchandise
-        ImageView myMerchandiseIcon = findViewById(R.id.myMerchandiseIcon);
-        myMerchandiseIcon.setOnClickListener(v -> {
-            Intent intent = new Intent(MerchandiseActivity.this, MyMerchandiseActivity.class);
-            startActivity(intent);
-        });
     }
 
     // Metode untuk mengatur navigasi
-    private void setupBottomNavigation () {
+    private void setupBottomNavigation() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setSelectedItemId(R.id.nav_merchandise);
+        bottomNavigationView.setSelectedItemId(R.id.nav_collection);
 
-        Context context = this;
+        final Context context = this;
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -128,11 +123,11 @@ public class MerchandiseActivity extends AppCompatActivity {
                 if (id == R.id.nav_home) {
                     startActivity(new Intent(context, HomeActivity.class));
                 } else if (id == R.id.nav_collection) {
-                    startActivity(new Intent(context, CollectionSectionsActivity.class));
+                    return true; // Sudah di halaman ini
                 } else if (id == R.id.nav_scan) {
                     startActivity(new Intent(context, ScanQRActivity.class));
                 } else if (id == R.id.nav_merchandise) {
-                    return true; // Sudah di halaman ini
+                    startActivity(new Intent(context, MerchandiseActivity.class));
                 } else if (id == R.id.nav_profile) {
                     startActivity(new Intent(context, ProfileActivity.class));
                 }

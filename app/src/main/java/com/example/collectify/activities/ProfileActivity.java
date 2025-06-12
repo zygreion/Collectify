@@ -1,5 +1,6 @@
 package com.example.collectify.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -100,7 +101,9 @@ public class ProfileActivity extends AppCompatActivity {
                 });
 
             } catch (Exception e) {
-                runOnUiThread(() -> Toast.makeText(this, "Gagal memuat profil: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> {
+                    Toast.makeText(this, "Gagal memuat profil: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
             }
         }).start();
     }
@@ -110,19 +113,21 @@ public class ProfileActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.nav_profile);
 
+        Context context = this;
+
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull android.view.MenuItem item) {
                 int id = item.getItemId();
 
                 if (id == R.id.nav_home) {
-                    startActivity(new Intent(ProfileActivity.this, HomeActivity.class));
+                    startActivity(new Intent(context, HomeActivity.class));
                 } else if (id == R.id.nav_collection) {
-                    startActivity(new Intent(ProfileActivity.this, CollectionActivity.class));
+                    startActivity(new Intent(context, CollectionSectionsActivity.class));
                 } else if (id == R.id.nav_scan) {
-                    startActivity(new Intent(ProfileActivity.this, ScanQRActivity.class));
+                    startActivity(new Intent(context, ScanQRActivity.class));
                 } else if (id == R.id.nav_merchandise) {
-                    startActivity(new Intent(ProfileActivity.this, MerchandiseActivity.class));
+                    startActivity(new Intent(context, MerchandiseActivity.class));
                 } else if (id == R.id.nav_profile) {
                     return true; // Sudah di halaman ini
                 }

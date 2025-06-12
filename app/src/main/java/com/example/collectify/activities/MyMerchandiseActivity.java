@@ -1,5 +1,6 @@
 package com.example.collectify.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -8,7 +9,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -21,7 +21,6 @@ import com.example.collectify.db.SupabaseClient;
 import com.example.collectify.model.MyMerchandiseModel;
 import com.example.collectify.utils.SessionManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 
 import org.json.JSONException;
 import java.io.IOException;
@@ -113,6 +112,8 @@ public class MyMerchandiseActivity extends AppCompatActivity {
         // Tetap tandai item merchandise sebagai aktif
         bottomNavigationView.setSelectedItemId(R.id.nav_merchandise);
 
+        Context context = this;
+
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
 
@@ -123,13 +124,13 @@ public class MyMerchandiseActivity extends AppCompatActivity {
 
             Intent intent = null;
             if (id == R.id.nav_home) {
-                intent = new Intent(MyMerchandiseActivity.this, HomeActivity.class);
+                intent = new Intent(context, HomeActivity.class);
             } else if (id == R.id.nav_collection) {
-                intent = new Intent(MyMerchandiseActivity.this, CollectionActivity.class);
+                intent = new Intent(context, CollectionSectionsActivity.class);
             } else if (id == R.id.nav_scan) {
-                intent = new Intent(MyMerchandiseActivity.this, ScanQRActivity.class);
+                intent = new Intent(context, ScanQRActivity.class);
             } else if (id == R.id.nav_profile) {
-                intent = new Intent(MyMerchandiseActivity.this, ProfileActivity.class);
+                intent = new Intent(context, ProfileActivity.class);
             }
 
             if(intent != null){

@@ -2,6 +2,8 @@ package com.example.collectify.db;
 
 import android.util.Log;
 
+import com.example.collectify.model.CollectionModel;
+import com.example.collectify.model.CollectionStampsModel;
 import com.example.collectify.model.MerchandiseModel;
 import com.example.collectify.model.MyMerchandiseModel;
 import com.example.collectify.model.ScanQRResultModel;
@@ -19,6 +21,9 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -121,7 +126,8 @@ public class SupabaseClient {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("apikey", API_KEY);
-        conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+//        conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+        conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
         conn.setRequestProperty("Content-Type", "application/json");
         conn.setRequestProperty("Accept", "application/json");
 
@@ -151,12 +157,97 @@ public class SupabaseClient {
             String name = obj.getString("name");
             String imageUrl = obj.getString("image_url");
             int stock = obj.getInt("stock");
-            merchandiseList.add(new MerchandiseModel(id, name, imageUrl, stock));
+            int requiredStamp = obj.getInt("required_stamp");
+            merchandiseList.add(new MerchandiseModel(id, name, imageUrl, stock, requiredStamp));
         }
         return merchandiseList;
     }
 
-    public static JSONArray getAllCollections() throws IOException, JSONException {
+    public static List<CollectionStampsModel> getCollectionsStampsFromUser(String userId) throws IOException, JSONException {
+        URL url = new URL(SUPABASE_URL + "/rest/v1/rpc/get_collections_stamps_from_user");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("apikey", API_KEY);
+        conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setDoOutput(true);
+
+        JSONObject body = new JSONObject();
+        body.put("p_user_id", userId);
+
+        try (OutputStream os = conn.getOutputStream()) {
+            byte[] input = body.toString().getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+
+        int responseCode = conn.getResponseCode();
+        Log.d("SupabaseClient", "Response code: " + responseCode);
+
+        String response = readResponse(conn);
+        Log.d("SupabaseClient", "Response body: " + response);
+
+        List<CollectionStampsModel> collectionStampsList = new ArrayList<>();
+
+        if (responseCode == 200) {
+            JSONArray collectionsArray = new JSONArray(response);
+
+            for (int i = 0; i < collectionsArray.length(); i++) {
+                JSONObject collectionObject = collectionsArray.getJSONObject(i);
+
+                CollectionModel collection = new CollectionModel(
+                        collectionObject.getLong("id"),
+                        collectionObject.getString("name"),
+                        collectionObject.getString("image_url"),
+                        collectionObject.getInt("total_stamps_collected"),
+                        collectionObject.getInt("total_stamps")
+                );
+
+                List<StampModel> stampsInCollection = new ArrayList<>();
+                JSONArray stampsArray = collectionObject.getJSONArray("stamps");
+                for (int j = 0; j < stampsArray.length(); j++) {
+                    JSONObject stampObject = stampsArray.getJSONObject(j);
+
+                    // --- Pengecekan null dan parsing untuk scanned_at ---
+                    OffsetDateTime scannedAt = null;
+                    if (stampObject.has("scanned_at") && !stampObject.isNull("scanned_at")) {
+                        try {
+                            // Hanya parse jika bukan null di JSON
+                            scannedAt = OffsetDateTime.parse(stampObject.getString("scanned_at"));
+                        } catch (DateTimeParseException e) {
+                            Log.e("SupabaseClient", "Error parsing scanned_at timestamp for stamp ID " + stampObject.optLong("id") + ": " + stampObject.optString("scanned_at"), e);
+                            // Pertimbangkan bagaimana Anda ingin menangani error parsing (misalnya, biarkan null, atau default ke Instant.EPOCH)
+                        }
+                    }
+                    // --- Akhir pengecekan null dan parsing ---
+
+                    stampsInCollection.add(new StampModel(
+                            stampObject.getLong("id"),
+                            stampObject.getString("name"),
+                            stampObject.getString("image_url"),
+                            stampObject.getString("jam_operasional"),
+                            stampObject.getString("harga_tiket"),
+                            stampObject.getString("deskripsi"),
+                            stampObject.getString("lokasi"),
+                            stampObject.getBoolean("is_scanned"),
+                            scannedAt
+                    ));
+                }
+
+                collectionStampsList.add(new CollectionStampsModel(
+                        collection,
+                        stampsInCollection
+                ));
+            }
+        }
+
+        if (responseCode >= 400) {
+            throw new IOException("Failed to fetch data: " + response);
+        }
+
+        return collectionStampsList;
+    }
+
+    public static List<StampModel> getAllStamps() throws IOException, JSONException {
         URL url = new URL(SUPABASE_URL + "/rest/v1/stamp?select=*");
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -172,11 +263,33 @@ public class SupabaseClient {
         String response = readResponse(conn);
         Log.d("SupabaseClient", "Response body: " + response);
 
+        List<StampModel> stampList = new ArrayList<>();
+
+        if (responseCode == 200) {
+            JSONArray jsonArray = new JSONArray(response);
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject stampObject = jsonArray.getJSONObject(i);
+
+                stampList.add(new StampModel(
+                        stampObject.getLong("id"),
+                        stampObject.getString("name"),
+                        stampObject.getString("image_url"),
+                        stampObject.getString("qr_string"),
+                        stampObject.getLong("collection_id"),
+                        stampObject.getString("jam_operasional"),
+                        stampObject.getString("harga_tiket"),
+                        stampObject.getString("deskripsi"),
+                        stampObject.getString("lokasi")
+                ));
+            }
+        }
+
         if (responseCode >= 400) {
             throw new IOException("Failed to fetch data: " + response);
         }
 
-        return new JSONArray(response);
+        return stampList;
     }
 
     public static int fetchTotalStamp(String userId) throws IOException, JSONException {
@@ -194,6 +307,33 @@ public class SupabaseClient {
 
     public static String exchangeMerchandise(String userId, int merchandiseId) throws IOException, JSONException {
         URL url = new URL(SUPABASE_URL + "/rest/v1/rpc/exchange_merchandise");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("apikey", API_KEY);
+        conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setDoOutput(true);
+
+        JSONObject body = new JSONObject();
+        body.put("p_user_id", userId);
+        body.put("p_merchandise_id", merchandiseId);
+
+        try (OutputStream os = conn.getOutputStream()) {
+            byte[] input = body.toString().getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode == 200 || responseCode == 204) {
+            return "success";
+        } else {
+            String errorResponse = readResponse(conn);
+            return errorResponse;
+        }
+    }
+
+    public static String exchangeMerchandise2(String userId, int merchandiseId) throws IOException, JSONException {
+        URL url = new URL(SUPABASE_URL + "/rest/v1/rpc/exchange_merchandise_2");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
         conn.setRequestProperty("apikey", API_KEY);
@@ -249,7 +389,7 @@ public class SupabaseClient {
     }
 
     public static StampModel getStampByQrString(String qrString) throws IOException, JSONException {
-        StampModel stamp = new StampModel(-999, "Unknown", -999);
+        StampModel stamp = null;
         URL url = new URL(SUPABASE_URL + "/rest/v1/stamp?select=*&qr_string=eq." + qrString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -263,9 +403,16 @@ public class SupabaseClient {
         if (jsonArray.length() == 1) {
             JSONObject obj = jsonArray.getJSONObject(0);
 
-            stamp.id = obj.getInt("id");
-            stamp.name = obj.getString("name");
-            stamp.collection_id = obj.getInt("collection_id");
+            stamp = new StampModel(
+                    obj.getLong("id"),
+                    obj.getString("name"),
+                    obj.getString("image_url"),
+                    obj.getString("jam_operasional"),
+                    obj.getString("harga_tiket"),
+                    obj.getString("deskripsi"),
+                    obj.getString("lokasi")
+            );
+
         } else {
             Log.e("SupabaseClient", "Stempel tidak valid!");
         }
@@ -276,9 +423,9 @@ public class SupabaseClient {
 
     public static ScanQRResultModel scanQRCode(String userId, String qrString) throws IOException, JSONException {
         StampModel stamp = getStampByQrString(qrString);
-        ScanQRResultModel scanQRResult = new ScanQRResultModel(0,stamp);
+        ScanQRResultModel scanQRResult = new ScanQRResultModel(0, stamp);
         // Jika Stamp tidak ditemukan, tidak bisa mencatat pemindaian
-        if (stamp.id == -999) {
+        if (stamp == null) {
             Log.d("SupabaseClient", "Stamp dengan QR String" + qrString + " tidak ditemukan!");
             scanQRResult.code = ScanQRResultModel.CODE_STAMP_NOT_FOUND;
             return scanQRResult;
@@ -311,6 +458,8 @@ public class SupabaseClient {
         if (code >= 200 && code < 400) {
             Log.i("SupabaseClient", "Berhasil scan QR String" + qrString + " oleh userId " + userId);
             scanQRResult.code = ScanQRResultModel.CODE_STAMP_SCAN_SUCCESS;
+            stamp.isScanned = true;
+            stamp.scannedAt = OffsetDateTime.now(ZoneOffset.ofHours(7));
         } else if (code >= 400) {
             InputStream errorStream = conn.getErrorStream();
             String error = new BufferedReader(new InputStreamReader(errorStream)).lines().collect(Collectors.joining("\n"));

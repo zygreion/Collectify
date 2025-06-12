@@ -2,34 +2,37 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="16dp">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="160dp">
+        android:layout_height="130dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/rounded_image"
+        android:clipToOutline="true">
 
         <ImageView
-            android:id="@+id/imageCollection"
+            android:id="@+id/img_stamp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:background="@drawable/rounded_image"/>
+            android:src="@drawable/home_2"/>
 
         <View
-            android:id="@+id/darkOverlay"
+            android:id="@+id/dark_overlay"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#DD000000"
+            android:background="#88000000"
             android:visibility="gone"/>
     </FrameLayout>
 
     <TextView
-        android:id="@+id/nameCollection"
+        android:id="@+id/tv_stamp_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Nama Koleksi"
-        android:textAlignment="center"
+        android:text="Nama Stamp"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:paddingTop="4dp"/>
+        android:maxLines="1"
+        android:ellipsize="end" />
 </LinearLayout>

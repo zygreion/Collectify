@@ -1,33 +1,60 @@
 package com.example.collectify.model;
 
-public class StampModel {
-    public int id;
+import java.io.Serializable;
+import java.time.OffsetDateTime;
+
+public class StampModel implements Serializable {
+    public long id;
     public String name;
-    public String image_url;
-    public String qr_string;
-    public int collection_id;
-    public String jam_operasional;
-    public String harga_tiket;
+    public String imageUrl;
+    public String qrString;
+    public long collectionId;
+    public String jamOperasional;
+    public String hargaTiket;
     public String deskripsi;
-    public int sudah_dikoleksi;
     public String lokasi;
+    public boolean isScanned;
+    public OffsetDateTime scannedAt;
 
-    public StampModel(int id, String name, int collection_id) {
+    public StampModel(long id, String name, String imageUrl, String jamOperasional, String hargaTiket, String deskripsi, String lokasi) {
         this.id = id;
         this.name = name;
-        this.collection_id = collection_id;
-    }
-
-    public StampModel(int id, String name, String image_url, String qr_string, int collection_id, String jam_operasional, String harga_tiket, String deskripsi, int sudah_dikoleksi, String lokasi) {
-        this.id = id;
-        this.name = name;
-        this.image_url = image_url;
-        this.qr_string = qr_string;
-        this.collection_id = collection_id;
-        this.jam_operasional = jam_operasional;
-        this.harga_tiket = harga_tiket;
+        this.imageUrl = imageUrl;
+        this.jamOperasional = jamOperasional;
+        this.hargaTiket = hargaTiket;
         this.deskripsi = deskripsi;
-        this.sudah_dikoleksi = sudah_dikoleksi;
         this.lokasi = lokasi;
     }
+
+    public StampModel(long id, String name, long collectionId) {
+        this.id = id;
+        this.name = name;
+        this.collectionId = collectionId;
+    }
+
+    public StampModel(long id, String name, String imageUrl, String jamOperasional, String hargaTiket, String deskripsi, String lokasi, boolean isScanned, OffsetDateTime scannedAt) {
+        this.id = id;
+        this.name = name;
+        this.imageUrl = imageUrl;
+        this.jamOperasional = jamOperasional;
+        this.hargaTiket = hargaTiket;
+        this.deskripsi = deskripsi;
+        this.lokasi = lokasi;
+        this.isScanned = isScanned;
+        this.scannedAt = scannedAt;
+    }
+
+    public StampModel(long id, String name, String imageUrl, String qrString, long collectionId, String jamOperasional, String hargaTiket, String deskripsi, String lokasi) {
+        this.id = id;
+        this.name = name;
+        this.imageUrl = imageUrl;
+        this.qrString = qrString;
+        this.collectionId = collectionId;
+        this.jamOperasional = jamOperasional;
+        this.hargaTiket = hargaTiket;
+        this.deskripsi = deskripsi;
+        this.lokasi = lokasi;
+    }
+
+
 }

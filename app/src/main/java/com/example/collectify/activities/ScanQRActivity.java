@@ -1,6 +1,7 @@
 package com.example.collectify.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -18,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.collectify.R;
 import com.example.collectify.db.SupabaseClient;
 import com.example.collectify.model.ScanQRResultModel;
+import com.example.collectify.model.StampModel;
 import com.example.collectify.utils.SessionManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -30,6 +32,7 @@ import com.journeyapps.barcodescanner.ViewfinderView;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * Custom Scannner Activity extending from Activity to display a custom layout form scanner view.
@@ -39,7 +42,6 @@ public class ScanQRActivity extends AppCompatActivity {
     private CaptureManager capture;
     private DecoratedBarcodeView barcodeScannerView;
     private ImageButton btnScanQR;
-    private ViewfinderView viewfinderView;
 
     private boolean isScanning = false;
 
@@ -60,6 +62,7 @@ public class ScanQRActivity extends AppCompatActivity {
                     String userId = sessionManager.getUserId();
 
                     ScanQRResultModel scanQRResult = SupabaseClient.scanQRCode(userId, qrString);
+                    StampModel stamp = scanQRResult.stamp;
                     String msg = scanQRResult.getMessage();
 
                     runOnUiThread(() -> {
@@ -67,13 +70,14 @@ public class ScanQRActivity extends AppCompatActivity {
                         isScanning = false;
 
                         if (scanQRResult.code == ScanQRResultModel.CODE_STAMP_SCAN_SUCCESS) {
-                            Intent intent = new Intent(ScanQRActivity.this, CollectionActivity.class);
+                            Intent intent = new Intent(ScanQRActivity.this, StampDetailActivity.class);
+                            intent.putExtra("stamp", (Serializable) stamp);
                             // FLAG_ACTIVITY_NEW_TASK: Memulai Activity di task baru (jika tidak ada)
                             // FLAG_ACTIVITY_CLEAR_TASK: Menghapus semua Activity yang ada di task target
-                            // Kombinasi keduanya akan menghapus back stack hingga CollectionActivity menjadi satu-satunya Activity di task baru
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            // Kombinasi keduanya akan menghapus back stack hingga StampDetailActivity menjadi satu-satunya Activity di task baru
+//                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
-                            finish();
+//                            finish();
                         }
                     });
                 } catch (IOException | JSONException e) {
@@ -114,7 +118,6 @@ public class ScanQRActivity extends AppCompatActivity {
 
         barcodeScannerView = findViewById(R.id.zxing_barcode_scanner);
         btnScanQR = findViewById(R.id.btn_scan_qr);
-        viewfinderView = findViewById(R.id.zxing_viewfinder_view);
 
         capture = new CaptureManager(this, barcodeScannerView);
         capture.initializeFromIntent(getIntent(), savedInstanceState);
@@ -178,26 +181,25 @@ public class ScanQRActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.nav_scan);
 
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull android.view.MenuItem item) {
-                int id = item.getItemId();
+        Context context = this;
 
-                if (id == R.id.nav_home) {
-                    startActivity(new Intent(ScanQRActivity.this, HomeActivity.class));
-                } else if (id == R.id.nav_collection) {
-                    startActivity(new Intent(ScanQRActivity.this, CollectionActivity.class));
-                } else if (id == R.id.nav_scan) {
-                    return true; // Sudah di halaman ini
-                } else if (id == R.id.nav_merchandise) {
-                    startActivity(new Intent(ScanQRActivity.this, MerchandiseActivity.class));
-                } else if (id == R.id.nav_profile) {
-                    startActivity(new Intent(ScanQRActivity.this, ProfileActivity.class));
-                }
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
 
-                overridePendingTransition(0, 0);
-                return true;
+            if (id == R.id.nav_home) {
+                startActivity(new Intent(context, HomeActivity.class));
+            } else if (id == R.id.nav_collection) {
+                startActivity(new Intent(context, CollectionSectionsActivity.class));
+            } else if (id == R.id.nav_scan) {
+                return true; // Sudah di halaman ini
+            } else if (id == R.id.nav_merchandise) {
+                startActivity(new Intent(context, MerchandiseActivity.class));
+            } else if (id == R.id.nav_profile) {
+                startActivity(new Intent(context, ProfileActivity.class));
             }
+
+            overridePendingTransition(0, 0);
+            return true;
         });
     }
 }
