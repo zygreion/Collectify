@@ -29,10 +29,14 @@ public class MerchandiseAdapter extends RecyclerView.Adapter<MerchandiseAdapter.
 
     private final List<MerchandiseModel> merchandiseList;
     private final Context context;
+    private final TextView tvTotalStampAvailable;
+    private final int totalStampAvailable;
 
-    public MerchandiseAdapter(Context context, List<MerchandiseModel> merchandiseList) {
+    public MerchandiseAdapter(Context context, List<MerchandiseModel> merchandiseList, TextView tvTotalStampAvailable, int totalStampAvailable) {
         this.context = context;
         this.merchandiseList = merchandiseList;
+        this.tvTotalStampAvailable = tvTotalStampAvailable;
+        this.totalStampAvailable = totalStampAvailable;
     }
 
     @NonNull
@@ -93,6 +97,7 @@ public class MerchandiseAdapter extends RecyclerView.Adapter<MerchandiseAdapter.
                         ((android.app.Activity) context).runOnUiThread(() -> {
                             if (result.equals("success")) {
                                 item.stock -= 1; // Update lokal
+                                tvTotalStampAvailable.setText("Total Stamp yang Bisa Ditukar: " + (totalStampAvailable - item.requiredStamp));
                                 notifyItemChanged(holder.getAdapterPosition());
                                 dialog.dismiss();
                                 Toast.makeText(context, "Penukaran berhasil!", Toast.LENGTH_SHORT).show();

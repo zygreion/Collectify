@@ -85,9 +85,9 @@ public class MerchandiseActivity extends AppCompatActivity {
 
                 runOnUiThread(() -> {
                     if (!isFinishing() && !isDestroyed()) {
-                        adapter = new MerchandiseAdapter(MerchandiseActivity.this, list);
+                        adapter = new MerchandiseAdapter(MerchandiseActivity.this, list, totalStampTextView, totalStamp);
                         recyclerView.setAdapter(adapter);
-                        totalStampTextView.setText("Total Stamp: " + totalStamp);
+                        totalStampTextView.setText("Total Stamp yang Bisa Ditukar: " + totalStamp);
                         progressBar.setVisibility(View.GONE);
                     }
                 });
