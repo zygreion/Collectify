@@ -293,7 +293,8 @@ public class SupabaseClient {
     }
 
     public static int fetchTotalStamp(String userId) throws IOException, JSONException {
-        String urlString = SUPABASE_URL + "/rest/v1/user_stamp?user_id=eq." + userId + "&select=id";
+//        String urlString = SUPABASE_URL + "/rest/v1/user_stamp?user_id=eq." + userId + "&select=id";
+        String urlString = SUPABASE_URL + "/rest/v1/user_stamp?select=id&user_id=eq." + userId + "&is_exchanged=eq.false";
         URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -306,7 +307,8 @@ public class SupabaseClient {
     }
 
     public static String exchangeMerchandise(String userId, int merchandiseId) throws IOException, JSONException {
-        URL url = new URL(SUPABASE_URL + "/rest/v1/rpc/exchange_merchandise");
+//        URL url = new URL(SUPABASE_URL + "/rest/v1/rpc/exchange_merchandise");
+        URL url = new URL(SUPABASE_URL + "/rest/v1/rpc/exchange_merchandise_5");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
         conn.setRequestProperty("apikey", API_KEY);
