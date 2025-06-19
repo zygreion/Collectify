@@ -361,33 +361,6 @@ public class SupabaseClient {
         }
     }
 
-    public static String exchangeMerchandise2(String userId, int merchandiseId) throws IOException, JSONException {
-        URL url = new URL(SUPABASE_URL + "/rest/v1/rpc/exchange_merchandise_2");
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("apikey", API_KEY);
-        conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
-        conn.setRequestProperty("Content-Type", "application/json");
-        conn.setDoOutput(true);
-
-        JSONObject body = new JSONObject();
-        body.put("p_user_id", userId);
-        body.put("p_merchandise_id", merchandiseId);
-
-        try (OutputStream os = conn.getOutputStream()) {
-            byte[] input = body.toString().getBytes("utf-8");
-            os.write(input, 0, input.length);
-        }
-
-        int responseCode = conn.getResponseCode();
-        if (responseCode == 200 || responseCode == 204) {
-            return "success";
-        } else {
-            String errorResponse = readResponse(conn);
-            return errorResponse;
-        }
-    }
-
     public static List<MyMerchandiseModel> fetchMyMerchandise(String userId) throws IOException, JSONException {
         String requestUrl = SUPABASE_URL + "/rest/v1/user_merchandise?select=exchanged_at,merchandise(name,image_url)&user_id=eq." + userId + "&order=exchanged_at.desc";
         URL url = new URL(requestUrl);
