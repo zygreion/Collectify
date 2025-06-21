@@ -1,5 +1,7 @@
 # Aplikasi Koleksi Digital “Collectify” untuk Pengalaman Wisata Interaktif Berbasis Android
-[![logo-collectify-circle.png](https://i.postimg.cc/nLn6pctz/logo-collectify-circle.png)](https://postimg.cc/ZWDfLmnt)
+<p align="center">
+  <img src="https://i.postimg.cc/QN7XSmhJ/logo-collectify-circle-2.png" alt="Logo Collectify" width="256">
+</p>
 
 **Collectify** adalah aplikasi mobile berbasis Android yang dirancang untuk meningkatkan interaktivitas dan pengalaman pengunjung di tempat wisata melalui konsep gamifikasi. Aplikasi ini memungkinkan wisatawan untuk mengumpulkan "stempel" digital berbentuk QR Code yang tersebar di berbagai titik menarik dalam destinasi. Setiap stempel yang berhasil dipindai akan masuk ke dalam koleksi digital pengguna, dan akumulasi stempel dapat ditukarkan dengan merchandise eksklusif, memberikan insentif untuk eksplorasi lebih lanjut dan kunjungan berulang.
 
@@ -10,7 +12,7 @@
 * **Profil Pengguna**: Kelola informasi profil dan riwayat koleksi.
 * **Informasi Destinasi📍**: Temukan informasi dasar tentang tempat wisata dan lokasi stempel.
 
-## Teknologi Digunakan
+## Teknologi yang Digunakan
 * **Platform**: Android
 * **Bahasa Pemrograman**: Java
 * **IDE**: Android Studio
